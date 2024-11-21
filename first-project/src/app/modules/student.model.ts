@@ -6,14 +6,15 @@ import { Guardian, LocalGuardian, Student, UserName } from './student/student.in
 const userNameSchema = new Schema<UserName>({
     firstName: {
         type: String,
-        required: true,
+        // required: true,
+        required: [true, 'First Name is required'],
     },
     middleName: {
         type: String
     },
     lastName: {
         type: String,
-        required: true,
+        required: [true, 'Last Name is required'],
     }
 })
 
@@ -66,11 +67,18 @@ const localGuardianSchema = new Schema<LocalGuardian>({
 })
 
 const studentSchema = new Schema<Student>({
-    id: { type: String },
-    name: userNameSchema,
+    id: { type: String , required: true, unique: true},
+    name: {
+        type: userNameSchema,
+        required: true
+    },
     gender: {
         type: String,
-        enum: ['male', 'female', 'other'],
+        enum: {
+            values: ['male', 'female', 'other'],
+            // message: "The gender field can only be one of the following: 'male', 'female' or 'other' ."
+            message: '{VALUE} is not valid' 
+        },
         required: true
     },
     dateOfBirth: { type: String },
@@ -83,8 +91,14 @@ const studentSchema = new Schema<Student>({
     },
     presentAddress: { type: String, required: true },
     permanentAddress: { type: String, required: true },
-    guardian: guardianSchema,
-    localGuardian: localGuardianSchema,
+    guardian: {
+        type: guardianSchema,
+        required: true
+    },
+    localGuardian: {
+        type: localGuardianSchema,
+        required:true
+    },
 
     profileImg: { type: String },
     // isActive: {'active': 'blocked'},
@@ -97,3 +111,4 @@ const studentSchema = new Schema<Student>({
 
 
 export const StudentModel = model<Student>('Student', studentSchema);
+
