@@ -1,9 +1,29 @@
 import { Request, Response } from 'express';
 import { StudentServices } from "./student.service";
 import { error } from 'console';
+import Joi from 'joi'
 
 const createStudent = async (req: Request, res: Response) => {
     try {
+
+        // creating a schema validation using Joi
+
+        const JoivalidationSchema = Joi.object({
+            id: Joi.string(),
+            name: {
+                firstName: Joi.string().max(20).required,
+                lastName: Joi.string().max(20),
+                middleName: Joi.string().max(20),
+            },
+            gender: Joi.string().required().valid(['male', 'female', 'other']),
+        })
+
+
+
+
+
+
+
         const { student: studentData } = req.body;
         const result = await StudentServices.createStudentIntoDB(studentData);
 
@@ -57,7 +77,7 @@ const getAllStudents = async (req: Request, res: Response) => {
 
 const getSingleStudents = async (req: Request, res: Response) => {
     try {
-        const {studentId} = req.params;
+        const { studentId } = req.params;
 
         const result = await StudentServices.getSingleStudentsFromDB(studentId)
 
