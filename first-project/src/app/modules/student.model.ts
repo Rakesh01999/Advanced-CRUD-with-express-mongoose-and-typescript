@@ -107,10 +107,10 @@ const studentSchema = new Schema<Student>({
         required: [true, 'Email is required'],
         // match: [/.+@.+\..+/, 'Please enter a valid email address'],
         unique: true,
-        validate: {
-            validator: (value: string) => validator.isEmail(value),
-            message: '{VALUE} is not valid email type '
-        }
+        // validate: {
+        //     validator: (value: string) => validator.isEmail(value),
+        //     message: '{VALUE} is not valid email type '
+        // }
     },
     contactNo: {
         type: String,
