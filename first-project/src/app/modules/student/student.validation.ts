@@ -59,6 +59,7 @@ const studentValidationSchema = z.object({
     isActive: z.enum(["active", "blocked"], {
         invalid_type_error: "Status must be either active or blocked",
     }).default("active"),
+    isDeleted: z.boolean(),
 });
 
 export default studentValidationSchema;
