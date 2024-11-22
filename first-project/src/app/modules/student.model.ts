@@ -90,8 +90,7 @@ const studentSchema = new Schema<TStudent, StudentModel>({
     password: {
         type: String,
         required: [true, 'Password is required'],
-        unique: true,
-        maxlength: [20, 'Password can not be more than 20 characters ' ],
+        maxlength: [20, 'Password can not be more than 20 characters '],
     },
     name: {
         type: userNameSchema,
@@ -161,30 +160,40 @@ const studentSchema = new Schema<TStudent, StudentModel>({
         },
         default: 'active',
     },
+    isDeleted: {
+        type: Boolean,
+        default: false,
+    }
 });
 
 // pre save middleware/ hook : will work on create() save()
-studentSchema.pre('save', async function(next){
+studentSchema.pre('save', async function (next) {
     // console.log(this, 'pre hook: we will save data');
-    const user = this
+    const user = this; // doc
     // hashing password and save into DB
-    user.password = await bcrypt.hash(user.password,Number(config.bcrypt_salt_rounds));
-    
+    user.password = await bcrypt.hash(user.password, Number(config.bcrypt_salt_rounds));
+
     next();
 })
 
 // post save middleware/ hook
-studentSchema.post('save', function(){
-    console.log(this, 'post hook: we will saved our data');
+studentSchema.post('save', function (doc, next) {
+    // console.log(this, 'post hook: we will saved our data');
+    doc.password = '';
+
+    next();
 })
 
 
-
+// Query Middleware
+studentSchema.pre('find', function (next) {
+    console.log(this);
+})
 
 
 // creating a custom static method
-studentSchema.statics.isUserExists = async function (id:string) {
-    const existingUser = await Student.findOne({id});
+studentSchema.statics.isUserExists = async function (id: string) {
+    const existingUser = await Student.findOne({ id });
 
     return existingUser;
 }
